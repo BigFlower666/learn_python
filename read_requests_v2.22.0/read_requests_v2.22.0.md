@@ -396,7 +396,7 @@ Digest realm="me@kennethreitz.com", nonce="46f593d6aedc8fe983c2430da4ddda3f", qo
 
   url(self)方法使用了装饰器@property，目的是将方法url(self)变成属性来调用，返回本地服务器地址
 
-  "http://127.0.0.1:xxxx"
+  "http://127.0.0.1:xxxx"。
 
 emmm...感觉讲了很多，可是还是没搞清楚pytest是如何工作的啊？接下来我们就来讲这块内容，在此之前，我们再贴一下前面的代码：
 
@@ -453,7 +453,7 @@ def httpbin(request):
 
 这是一个"session"级别的fixture方法，首先实例化Server对象为server，传入application参数"httpbin_app"，application参数我们在前面提到过，它指向我们的web应用程序。这里的httpbin_app是pytest-httpbin下app模块的别称，该模块是专门用于http测试而编写的web应用程序，这里就不扩展了。然后server继续调用start()方法，启动线程，开启WSGI服务器，最后返回server。这一切完全符合我们前面的设想。
 
-现在，谜底终于揭晓了，我们再总结梳理一下整个流程。
+现在，谜底终于揭晓了，我们再总结梳理一下整个流程:
 
 - 执行pytest测试程序 python3 -m pytest test_tt.py。
 
@@ -1207,7 +1207,7 @@ class Session(SessionRedirectMixin):
 ...
 class Request(RequestHooksMixin):
     """A user-created :class:`Request <Request>` object.
-    Used to prepare a :class:`PreparedRequest <PreparedRequest>`, which is sent to the 							server.
+    Used to prepare a :class:`PreparedRequest <PreparedRequest>`, which is sent to the server.
     ...
     """
 
