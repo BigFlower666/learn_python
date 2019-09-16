@@ -1,8 +1,8 @@
-## -1-前言
+## *-1-前言*
 
 在写这篇文章之前，看过一个老外写的关于requests源码的阅读，思路清晰，概念点到为止，不繁琐，觉得挺不错。想法有了，那就开始行动。
 
-## -2-准备
+## *-2-准备*
 
 因为习惯了终端的操作方式，所以近期我的代码编辑器一直是vim+插件，个人认为编辑器这块只要自己用的顺手就可以，只要满足以下几点即可：
 
@@ -43,9 +43,9 @@ pytest-httpbin-1.0.0 at /Library/Frameworks/Python.framework/Versions/3.6/lib/py
 b'<!DOCTYPE html>...
 ```
 
-## -3-代码分析
+## *-3-代码分析*
 
-### step0确定方向
+### *step0确定方向*
 
 在我们分析requests源码之前，我们先理一下思路。因为requests发展至今已经提交了137个版本，功能越来越完善，代码也越来越复杂，如果一上来就准备将所有源码啃一遍，那么我想肯定坚持不了3天。所以我决定从简单的入手，触类旁通，逐步攻克目标。
 
@@ -75,7 +75,7 @@ Requests is ready for today's web.
 
 像我这样对http协议不是很熟悉，甚至都听不懂某些专有名词（也可能是我翻译有偏差），暂且先知道它有这么个东东，在后期使用的时候再深入研究，学以致用。
 
-#### 从测试单元开始
+#### *从测试单元开始*
 
 了解了requests具备的基本功能后，就可以开始分析源码了。那么我们该从哪里开始？在源码目录下有一个tests文件夹，这里面以test开头的测试文件是专门用于测试requests接口：
 
@@ -121,7 +121,7 @@ def test_DIGEST_HTTP_200_OK_GET(self, httpbin):
         assert r.status_code == 200
 ```
 
-### step1源码概括
+### *step1源码概括*
 
 我们先大致了解一下这个测试用例的功能：
 
@@ -163,9 +163,9 @@ def test_DIGEST_HTTP_200_OK_GET(self, httpbin):
 ```
 新建了一个会话对象s，同时也设置了auth变量，跟前面不同的是这个请求是由会话对象s发起的。
 
-### step2源码分析
+### *step2源码分析*
 
-#### digest_auth_algo
+#### *digest_auth_algo*
 
 ```
 # test_requests.py
@@ -186,7 +186,7 @@ class TestRequests:
 
 上文所说的摘要算法就是该代码实现的功能，当前该摘要算法分别选用了"MD5","SHA-256","SHA-512"。如果你想更深入了解，请参考[RFC 2069](https://tools.ietf.org/html/rfc206)。
 
-#### HTTPDigestAuth
+#### *HTTPDigestAuth*
 
 ```
 # test_requests.py
@@ -230,7 +230,7 @@ threading.local()在这里的作用是保存一个全局变量，但是这个全
 200
 ```
 
-#### httpbin
+#### *httpbin*
 
 ```
 # test_requests.py
@@ -490,7 +490,7 @@ httpbin分析花了不少时间，短短几行代码却衍生出了许多内容�
 
 因为在使用测试用例中的url时，测试服务器返回了404错误，表示无法找到文件，于是后两个参数被我去掉了。这个问题应该是测试服务器的问题，可能是个bug，我认为不是很重要，所以没有去深究。如果有同学找到了这个答案，记得告知下我哈。
 
-#### get
+#### *get*
 
 ```
 # test_requests.py
@@ -538,7 +538,7 @@ kwargs.setdefault('allow_redirects', True)，设置默认键值对，若键值�
 
 返回请求方法request对象。
 
-#### request
+#### *request*
 
 ```
 # api.py
@@ -632,7 +632,7 @@ with sessions.Session() as session，with语句的作用是确保session对象�
 
 最后返回session.request对象。
 
-#### Session
+#### *Session*
 
 ```
 # api.py
@@ -855,7 +855,7 @@ __以上就是with语句的用途，这部分内容大家务必要理解，因�
 
 但是，我们的目标是弄清楚它的来龙去脉，所以我们继续分析。
 
-#### Session.\_\_init\_\_
+#### *Session.\_\_init\_\_*
 
 回到with语句中session获得上下文管理器sessions.Session()的_\_enter\_\_(self)对象时刻，此时Session对象实例化，调用初始化方法\_\_init\_\_(self)：
 
@@ -1107,7 +1107,7 @@ mount方法会注册一个传输适配器的特定实例到一个前缀上面。
 
 其他参数的初始化请参考字面意思。
 
-#### Session.request
+#### *Session.request*
 
 Session对象实例化后指向session，接着调用了其内部方法request：
 
@@ -1356,7 +1356,7 @@ send方法接收PreparedRequest对象，然后根据该对象的url参数获取�
 
 
 
-#### requests.session
+#### *requests.session*
 
 原以为此次源码分析到这里就结束了，结果在检查的时候发现还遗留了个问题。还记不记得前面提到让大家务必理解with语句的作用，没错，下面这个问题就是与它有关联。我们看下这部分源码：
 
@@ -1473,7 +1473,7 @@ class Session(SessionRedirectMixin):
 
 Happy end！
 
-## -4-结束语
+## *-4-结束语*
 
 源码阅读真是个苦差事，写这篇文章前前后后共花了12天时间，占用了两个周末，效率有待提高。从此次的阅读成果来看，自己的HTTP知识储备是远远不够的，后期要再接再厉，弥补欠缺的知识。
 
