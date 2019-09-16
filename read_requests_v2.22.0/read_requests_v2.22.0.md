@@ -104,21 +104,21 @@ tests/test_requests.py:654:    def test_DIGESTAUTH_QUOTES_QOP_VALUE(self, httpbi
 # test_requests.py
 def test_DIGEST_HTTP_200_OK_GET(self, httpbin):
 
-	for authtype in self.digest_auth_algo:
-		auth = HTTPDigestAuth('user', 'pass')
-		url = httpbin('digest-auth', 'auth', 'user', 'pass', authtype, 'never')
+    for authtype in self.digest_auth_algo:
+        auth = HTTPDigestAuth('user', 'pass')
+        url = httpbin('digest-auth', 'auth', 'user', 'pass', authtype, 'never')
              
-		r = requests.get(url, auth=auth)
-		assert r.status_code == 200
+        r = requests.get(url, auth=auth)
+        assert r.status_code == 200
 
-		r = requests.get(url)
-		assert r.status_code == 401
-		print(r.headers['WWW-Authenticate'])
+        r = requests.get(url)
+        assert r.status_code == 401
+        print(r.headers['WWW-Authenticate'])
  
-		s = requests.session()
-		s.auth = HTTPDigestAuth('user', 'pass')
-		r = s.get(url)
-		assert r.status_code == 200
+        s = requests.session()
+        s.auth = HTTPDigestAuth('user', 'pass')
+        r = s.get(url)
+        assert r.status_code == 200
 ```
 
 ### step1源码概括
@@ -132,34 +132,34 @@ def test_DIGEST_HTTP_200_OK_GET(self, httpbin):
 测试方法定义，传入参数为httpbin。
 
 ```
-	for authtype in self.digest_auth_algo:
+    for authtype in self.digest_auth_algo:
 ```
 
 遍历不同的摘要认证算法。
 
 ```
-		auth = HTTPDigestAuth('user', 'pass')
-		url = httpbin('digest-auth', 'auth', 'user', 'pass', authtype, 'never')
+        auth = HTTPDigestAuth('user', 'pass')
+        url = httpbin('digest-auth', 'auth', 'user', 'pass', authtype, 'never')
 ```
 
 摘要认证变量auth及url变量的设置。
 
 ```
-		r = requests.get(url, auth=auth)
-		assert r.status_code == 200
+        r = requests.get(url, auth=auth)
+        assert r.status_code == 200
         
-		r = requests.get(url)
-		assert r.status_code == 401
-		print(r.headers['WWW-Authenticate'])
+        r = requests.get(url)
+        assert r.status_code == 401
+        print(r.headers['WWW-Authenticate'])
 ```
 
 对url发起get请求，200表示请求成功，401表示未经授权。这个测试是为了验证auth的必要性。
 
 ```
-		s = requests.session()
-		s.auth = HTTPDigestAuth('user', 'pass')
-		r = s.get(url)
-		assert r.status_code == 200
+        s = requests.session()
+        s.auth = HTTPDigestAuth('user', 'pass')
+        r = s.get(url)
+        assert r.status_code == 200
 ```
 新建了一个会话对象s，同时也设置了auth变量，跟前面不同的是这个请求是由会话对象s发起的。
 
@@ -170,16 +170,16 @@ def test_DIGEST_HTTP_200_OK_GET(self, httpbin):
 ```
 # test_requests.py
 def test_DIGEST_HTTP_200_OK_GET(self, httpbin):
-	...
-	for authtype in self.digest_auth_algo:
-	...
+    ...
+    for authtype in self.digest_auth_algo:
+    ...
       
 --------------------------------------------------------------------------------------------
 
 # test_requests.py
 class TestRequests:
-	digest_auth_algo = ('MD5', 'SHA-256', 'SHA-512')
-	...
+    digest_auth_algo = ('MD5', 'SHA-256', 'SHA-512')
+    ...
 ```
 
 在讲摘要认证算法之前先简单介绍一下摘要访问认证，它是一种协议规定的web服务器用来同网页浏览器进行认证信息协商的方法。浏览器在向服务器发送请求的过程中需要传递认证信息auth，auth经过摘要算法加密形成秘文，最后发送给服务器。服务器验证成功后返回“200”告知浏览器可以继续访问，若验证失败则返回"401"告诉浏览器禁止访问。
@@ -191,28 +191,28 @@ class TestRequests:
 ```
 # test_requests.py
 def test_DIGEST_HTTP_200_OK_GET(self, httpbin):
-	...				
-		...
-		auth = HTTPDigestAuth('user', 'pass')
-		...
+    ...				
+        ...
+        auth = HTTPDigestAuth('user', 'pass')
+        ...
 				
 --------------------------------------------------------------------------------------------
         
 # auth.py
 class HTTPDigestAuth(AuthBase):
-	"""Attaches HTTP Digest Authentication to the given Request object."""
+    """Attaches HTTP Digest Authentication to the given Request object."""
 
-	def __init__(self, username, password):
-		self.username = username
-		self.password = password
-		# Keep state in per-thread local storage
-		self._thread_local = threading.local()
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+        # Keep state in per-thread local storage
+        self._thread_local = threading.local()
 
-	def init_per_thread_state(self):
-		# Ensure state is initialized just once per-thread
-		...
+    def init_per_thread_state(self):
+        # Ensure state is initialized just once per-thread
+        ...
  
-	...
+    ...
 ```
 
 HTTPDigestAuth：为http请求对象提供摘要认证。实例化对象auth时需要传入认证所需的username及password。
@@ -235,27 +235,27 @@ threading.local()在这里的作用是保存一个全局变量，但是这个全
 ```
 # test_requests.py
 def test_DIGEST_HTTP_200_OK_GET(self, httpbin):
-	...
-		...
-		url = httpbin('digest-auth', 'auth', 'user', 'pass', authtype, 'never')
-		...
+    ...
+        ...
+        url = httpbin('digest-auth', 'auth', 'user', 'pass', authtype, 'never')
+        ...
       
 --------------------------------------------------------------------------------------------
 
 # conftest.py
 def prepare_url(value):
-	# Issue #1483: Make sure the URL always has a trailing slash
-	httpbin_url = value.url.rstrip('/') + '/'
+    # Issue #1483: Make sure the URL always has a trailing slash
+    httpbin_url = value.url.rstrip('/') + '/'
 
-	def inner(*suffix):
-		return urljoin(httpbin_url, '/'.join(suffix))
+    def inner(*suffix):
+        return urljoin(httpbin_url, '/'.join(suffix))
 
-	return inner
+    return inner
 
  
 @pytest.fixture
 def httpbin(httpbin):
-	return prepare_url(httpbin)
+    return prepare_url(httpbin)
 ```
 
 第一次接触pytest这个模块，看了半天没明白是怎么用的，于是就网上查查查。
@@ -269,29 +269,29 @@ httpbin像一个方法，因为url=httpbin('digest-auth', 'auth', 'user', 'pass'
 ```
 # test_requests.py
 def test_DIGEST_HTTP_200_OK_GET(self, httpbin):
-	...
-		...
-		url = httpbin('digest-auth', 'auth', 'user', 'pass', authtype, 'never')
-		pytest.set_trace()  # debug
-		...
+    ...
+        ...
+        url = httpbin('digest-auth', 'auth', 'user', 'pass', authtype, 'never')
+        pytest.set_trace()  # debug
+        ...
       
 --------------------------------------------------------------------------------------------
 
 # conftest.py
 def prepare_url(value):
-	# Issue #1483: Make sure the URL always has a trailing slash
-	httpbin_url = value.url.rstrip('/') + '/'
+    # Issue #1483: Make sure the URL always has a trailing slash
+    httpbin_url = value.url.rstrip('/') + '/'
 
-	def inner(*suffix):
-		return urljoin(httpbin_url, '/'.join(suffix))
+    def inner(*suffix):
+        return urljoin(httpbin_url, '/'.join(suffix))
 
-	return inner
+    return inner
 
- 
+
 @pytest.fixture
 def httpbin(httpbin):
-	pytest.set_trace()  # debug
-	return prepare_url(httpbin)
+    pytest.set_trace()  # debug
+    return prepare_url(httpbin)
 ```
 
 为了操作简单，这里我新建了测试文件test_tt.py，只调用了方法test_DIGEST_HTTP_200_OK_GET(self, httpbin)，调试信息如下：
@@ -342,42 +342,42 @@ Digest realm="me@kennethreitz.com", nonce="46f593d6aedc8fe983c2430da4ddda3f", qo
   ...
   
   class Server(object):
-  	"""
-  	HTTP server running a WSGI application in its own thread.
-  	"""
-  	port_envvar = 'HTTPBIN_HTTP_PORT'
+      """
+      HTTP server running a WSGI application in its own thread.
+      """
+      port_envvar = 'HTTPBIN_HTTP_PORT'
       
-  	def __init__(self, host='127.0.0.1', port=0, application=None, **kwargs):
-  		self.app = application
-  		if self.port_envvar in os.environ:
-  			port = int(os.environ[self.port_envvar])
-  		self._server = make_server(
-  			host,
-  			port,
-  			self.app,
-  			handler_class=Handler,
-  			**kwargs
-  		)
-  		self.host = self._server.server_address[0]
-  		self.port = self._server.server_address[1]
-  		self.protocol = 'http'
+      def __init__(self, host='127.0.0.1', port=0, application=None, **kwargs):
+          self.app = application
+          if self.port_envvar in os.environ:
+              port = int(os.environ[self.port_envvar])
+          self._server = make_server(
+              host,
+              port,
+              self.app,
+              handler_class=Handler,
+              **kwargs
+          )
+          self.host = self._server.server_address[0]
+          self.port = self._server.server_address[1]
+          self.protocol = 'http'
   
-  		self._thread = threading.Thread(
-  			name=self.__class__,
-  			target=self._server.serve_forever,
-  		)
-  	...
+          self._thread = threading.Thread(
+              name=self.__class__,
+              target=self._server.serve_forever,
+          )
+      ...
       
-  	...
-  	def start(self):                                                                                               
-  		self._thread.start()  
-  		...
+      ...
+      def start(self):                                                                                               
+          self._thread.start()  
+          ...
       
-  	...    
-  	@property
-  	def url(self):
-  		return '{0}://{1}:{2}'.format(self.protocol, self.host, self.port)
-  		...
+      ...    
+      @property
+      def url(self):
+          return '{0}://{1}:{2}'.format(self.protocol, self.host, self.port)
+          ...
   ```
 
   原来这是一个本地的WSGI服务器，专门用于pytest进行网络测试，这样的好处在于我们无需连接外部网络环境，在本地就能实现一系列的网络测试工作。
@@ -403,22 +403,22 @@ emmm...感觉讲了很多，可是还是没搞清楚pytest是如何工作的啊�
 ```
 # test_requests.py
 def test_DIGEST_HTTP_200_OK_GET(self, httpbin):
-	...
-		...
-		url = httpbin('digest-auth', 'auth', 'user', 'pass', authtype, 'never')
-		...
+    ...
+        ...
+        url = httpbin('digest-auth', 'auth', 'user', 'pass', authtype, 'never')
+        ...
       
 --------------------------------------------------------------------------------------------
 
 # conftest.py
 def prepare_url(value):
-	# Issue #1483: Make sure the URL always has a trailing slash
-	httpbin_url = value.url.rstrip('/') + '/'
+    # Issue #1483: Make sure the URL always has a trailing slash
+    httpbin_url = value.url.rstrip('/') + '/'
 
-	def inner(*suffix):
-		return urljoin(httpbin_url, '/'.join(suffix))
+    def inner(*suffix):
+        return urljoin(httpbin_url, '/'.join(suffix))
 
-	return inner
+    return inner
 
  
 @pytest.fixture
@@ -444,10 +444,10 @@ from httpbin import app as httpbin_app
 ...
 @pytest.fixture(scope='session')
 def httpbin(request):                                                                                             
-	server = serve.Server(application=httpbin_app)
-	server.start()
-	request.addfinalizer(server.stop)
-	return server                                                                                                 
+    server = serve.Server(application=httpbin_app)
+    server.start()
+    request.addfinalizer(server.stop)
+    return server                                                                                                 
 ...
 ```
 
@@ -499,32 +499,32 @@ import requests
 ...
 
 def test_DIGEST_HTTP_200_OK_GET(self, httpbin):
-	...
-	    ...
-		r = requests.get(url, auth=auth)
-		assert r.status_code == 200
+    ...
+        ...
+        r = requests.get(url, auth=auth)
+        assert r.status_code == 200
         
-		r = requests.get(url)
-		assert r.status_code == 401
-		print(r.headers['WWW-Authenticate'])
-		...
+        r = requests.get(url)
+        assert r.status_code == 401
+        print(r.headers['WWW-Authenticate'])
+        ...
 
 --------------------------------------------------------------------------------------------
 
 # api.py
 def get(url, params=None, **kwargs):
-	r"""Sends a GET request.
-     
-	:param url: URL for the new :class:`Request` object.
-	:param params: (optional) Dictionary, list of tuples or bytes to send
-		in the query string for the :class:`Request`.
-	:param \*\*kwargs: Optional arguments that ``request`` takes.
-	:return: :class:`Response <Response>` object
-	:rtype: requests.Response
-	"""
+    r"""Sends a GET request.
+ 
+    :param url: URL for the new :class:`Request` object.
+    :param params: (optional) Dictionary, list of tuples or bytes to send
+        in the query string for the :class:`Request`.
+    :param \*\*kwargs: Optional arguments that ``request`` takes.
+    :return: :class:`Response <Response>` object
+    :rtype: requests.Response
+    """
   
-	kwargs.setdefault('allow_redirects', True)
-	return request('get', url, params=params, **kwargs)
+    kwargs.setdefault('allow_redirects', True)
+    return request('get', url, params=params, **kwargs)
 ...
 ```
 
@@ -545,52 +545,52 @@ kwargs.setdefault('allow_redirects', True)，设置默认键值对，若键值�
 from . import sessions
 
 def request(method, url, **kwargs):
-	"""Constructs and sends a :class:`Request <Request>`.
+    """Constructs and sends a :class:`Request <Request>`.
 
-	:param method: method for the new :class:`Request` object: ``GET``, ``OPTIONS``, 								``HEAD``, ``POST``, ``PUT``, ``PATCH``, or ``DELETE``.
-	:param url: URL for the new :class:`Request` object.
-	:param params: (optional) Dictionary, list of tuples or bytes to send
-		in the query string for the :class:`Request`.
-	:param data: (optional) Dictionary, list of tuples, bytes, or file-like
-		object to send in the body of the :class:`Request`.
-	:param json: (optional) A JSON serializable Python object to send in the body of the 						:class:`Request`.
-	:param headers: (optional) Dictionary of HTTP Headers to send with the :class:`Request`.
-	:param cookies: (optional) Dict or CookieJar object to send with the :class:`Request`.
-	:param files: (optional) Dictionary of ``'name': file-like-objects`` (or ``{'name': 						file-tuple}``) for multipart encoding upload.
-		``file-tuple`` can be a 2-tuple ``('filename', fileobj)``, 3-tuple ``('filename', 					fileobj, 'content_type')``
-		or a 4-tuple ``('filename', fileobj, 'content_type', custom_headers)``, where 							``'content-type'`` is a string
-		defining the content type of the given file and ``custom_headers`` a dict-like 							object containing additional headers to add for the file.
-	:param auth: (optional) Auth tuple to enable Basic/Digest/Custom HTTP Auth.
-	:param timeout: (optional) How many seconds to wait for the server to send data
-		before giving up, as a float, or a :ref:`(connect timeout, read
-		timeout) <timeouts>` tuple.
-	:type timeout: float or tuple
-	:param allow_redirects: (optional) Boolean. Enable/disable 																			GET/OPTIONS/POST/PUT/PATCH/DELETE/HEAD redirection. Defaults to ``True``.
-	:type allow_redirects: bool
-	:param proxies: (optional) Dictionary mapping protocol to the URL of the proxy.
-	:param verify: (optional) Either a boolean, in which case it controls whether we verify
-		the server's TLS certificate, or a string, in which case it must be a path
-		to a CA bundle to use. Defaults to ``True``.
-	:param stream: (optional) if ``False``, the response content will be immediately 								downloaded.
-	:param cert: (optional) if String, path to ssl client cert file (.pem). If Tuple, 							('cert', 'key') pair.
-	:return: :class:`Response <Response>` object
-	:rtype: requests.Response
+    :param method: method for the new :class:`Request` object: ``GET``, ``OPTIONS``, 								``HEAD``, ``POST``, ``PUT``, ``PATCH``, or ``DELETE``.
+    :param url: URL for the new :class:`Request` object.
+    :param params: (optional) Dictionary, list of tuples or bytes to send
+        in the query string for the :class:`Request`.
+    :param data: (optional) Dictionary, list of tuples, bytes, or file-like
+        object to send in the body of the :class:`Request`.
+    :param json: (optional) A JSON serializable Python object to send in the body of the 						:class:`Request`.
+    :param headers: (optional) Dictionary of HTTP Headers to send with the :class:`Request`.
+    :param cookies: (optional) Dict or CookieJar object to send with the :class:`Request`.
+    :param files: (optional) Dictionary of ``'name': file-like-objects`` (or ``{'name': 						file-tuple}``) for multipart encoding upload.
+        ``file-tuple`` can be a 2-tuple ``('filename', fileobj)``, 3-tuple ``('filename', 					fileobj, 'content_type')``
+        or a 4-tuple ``('filename', fileobj, 'content_type', custom_headers)``, where 							``'content-type'`` is a string
+        defining the content type of the given file and ``custom_headers`` a dict-like 							object containing additional headers to add for the file.
+    :param auth: (optional) Auth tuple to enable Basic/Digest/Custom HTTP Auth.
+    :param timeout: (optional) How many seconds to wait for the server to send data
+        before giving up, as a float, or a :ref:`(connect timeout, read
+        timeout) <timeouts>` tuple.
+    :type timeout: float or tuple
+    :param allow_redirects: (optional) Boolean. Enable/disable 																			GET/OPTIONS/POST/PUT/PATCH/DELETE/HEAD redirection. Defaults to ``True``.
+    :type allow_redirects: bool
+    :param proxies: (optional) Dictionary mapping protocol to the URL of the proxy.
+    :param verify: (optional) Either a boolean, in which case it controls whether we verify
+        the server's TLS certificate, or a string, in which case it must be a path
+        to a CA bundle to use. Defaults to ``True``.
+    :param stream: (optional) if ``False``, the response content will be immediately 								downloaded.
+    :param cert: (optional) if String, path to ssl client cert file (.pem). If Tuple, 							('cert', 'key') pair.
+    :return: :class:`Response <Response>` object
+    :rtype: requests.Response
 
-	Usage::
-		>>> import requests
-		>>> req = requests.request('GET', 'https://httpbin.org/get')
-		<Response [200]>
-	"""
+    Usage::
+        >>> import requests
+        >>> req = requests.request('GET', 'https://httpbin.org/get')
+        <Response [200]>
+    """
 
-	# By using the 'with' statement we are sure the session is closed, thus we
-	# avoid leaving sockets open which can trigger a ResourceWarning in some
-	# cases, and look like a memory leak in others.
-	with sessions.Session() as session:
-		return session.request(method=method, url=url, **kwargs)
+    # By using the 'with' statement we are sure the session is closed, thus we
+    # avoid leaving sockets open which can trigger a ResourceWarning in some
+    # cases, and look like a memory leak in others.
+    with sessions.Session() as session:
+        return session.request(method=method, url=url, **kwargs)
 
 def get(url, params=None, **kwargs):
-	...
-	return request('get', url, params=params, **kwargs)
+    ...
+    return request('get', url, params=params, **kwargs)
 ...
 ```
 
@@ -639,158 +639,158 @@ with sessions.Session() as session，with语句的作用是确保session对象�
 from . import sessions
 
 def request(method, url, **kwargs):
-	"""Constructs and sends a :class:`Request <Request>`."""
-	...
-	with sessions.Session() as session:
-		return session.request(method=method, url=url, **kwargs)
+    """Constructs and sends a :class:`Request <Request>`."""
+    ...
+    with sessions.Session() as session:
+        return session.request(method=method, url=url, **kwargs)
 ...
     
 --------------------------------------------------------------------------------------------
 
 # sessions.py
 class Session(SessionRedirectMixin):
-	"""A Requests session.
-	...
-	Provides cookie persistence, connection-pooling, and configuration.
-	...
-	"""
+    """A Requests session.
+    ...
+    Provides cookie persistence, connection-pooling, and configuration.
+    ...
+    """
 
-	...
-	def __init__(self):
+    ...
+    def __init__(self):
 
-		#: A case-insensitive dictionary of headers to be sent on each
-		#: :class:`Request <Request>` sent from this
-		#: :class:`Session <Session>`.
-		self.headers = default_headers()
+        #: A case-insensitive dictionary of headers to be sent on each
+        #: :class:`Request <Request>` sent from this
+        #: :class:`Session <Session>`.
+        self.headers = default_headers()
 
-		#: Default Authentication tuple or object to attach to
-		#: :class:`Request <Request>`.
-		self.auth = None
+        #: Default Authentication tuple or object to attach to
+        #: :class:`Request <Request>`.
+        self.auth = None
 
-		#: Dictionary mapping protocol or protocol and host to the URL of the proxy
-		#: (e.g. {'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'}) to
-		#: be used on each :class:`Request <Request>`.
-		self.proxies = {}
+        #: Dictionary mapping protocol or protocol and host to the URL of the proxy
+        #: (e.g. {'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'}) to
+        #: be used on each :class:`Request <Request>`.
+        self.proxies = {}
 
-		#: Event-handling hooks.
-		self.hooks = default_hooks()
+        #: Event-handling hooks.
+        self.hooks = default_hooks()
 
-		#: Dictionary of querystring data to attach to each
-		#: :class:`Request <Request>`. The dictionary values may be lists for
-		#: representing multivalued query parameters.
-		self.params = {}
+        #: Dictionary of querystring data to attach to each
+        #: :class:`Request <Request>`. The dictionary values may be lists for
+        #: representing multivalued query parameters.
+        self.params = {}
 
-		#: Stream response content default.
-		self.stream = False
+        #: Stream response content default.
+        self.stream = False
 
-		#: SSL Verification default.
-		self.verify = True
+        #: SSL Verification default.
+        self.verify = True
 
-		#: SSL client certificate default, if String, path to ssl client
-		#: cert file (.pem). If Tuple, ('cert', 'key') pair.
-		self.cert = None
+        #: SSL client certificate default, if String, path to ssl client
+        #: cert file (.pem). If Tuple, ('cert', 'key') pair.
+        self.cert = None
 
-		#: Maximum number of redirects allowed. If the request exceeds this
-		#: limit, a :class:`TooManyRedirects` exception is raised.
-		#: This defaults to requests.models.DEFAULT_REDIRECT_LIMIT, which is
-		#: 30.
-		self.max_redirects = DEFAULT_REDIRECT_LIMIT
+        #: Maximum number of redirects allowed. If the request exceeds this
+        #: limit, a :class:`TooManyRedirects` exception is raised.
+        #: This defaults to requests.models.DEFAULT_REDIRECT_LIMIT, which is
+        #: 30.
+        self.max_redirects = DEFAULT_REDIRECT_LIMIT
 
-		#: Trust environment settings for proxy configuration, default
-		#: authentication and similar.
-		self.trust_env = True
+        #: Trust environment settings for proxy configuration, default
+        #: authentication and similar.
+        self.trust_env = True
 
-		#: A CookieJar containing all currently outstanding cookies set on this
-		#: session. By default it is a
-		#: :class:`RequestsCookieJar <requests.cookies.RequestsCookieJar>`, but
-		#: may be any other ``cookielib.CookieJar`` compatible object.
-		self.cookies = cookiejar_from_dict({})
+        #: A CookieJar containing all currently outstanding cookies set on this
+        #: session. By default it is a
+        #: :class:`RequestsCookieJar <requests.cookies.RequestsCookieJar>`, but
+        #: may be any other ``cookielib.CookieJar`` compatible object.
+        self.cookies = cookiejar_from_dict({})
 
-		# Default connection adapters.
-		self.adapters = OrderedDict()
-		self.mount('https://', HTTPAdapter())
-		self.mount('http://', HTTPAdapter())
+        # Default connection adapters.
+        self.adapters = OrderedDict()
+        self.mount('https://', HTTPAdapter())
+        self.mount('http://', HTTPAdapter())
 
-	def __enter__(self):
-		return self
+    def __enter__(self):
+        return self
 
-	def __exit__(self, *args):
-		self.close()
-		...
+    def __exit__(self, *args):
+        self.close()
+        ...
 
-	...
-	def request(self, method, url,
-			params=None, data=None, headers=None, cookies=None, files=None,
-			auth=None, timeout=None, allow_redirects=True, proxies=None,
-			hooks=None, stream=None, verify=None, cert=None, json=None):
-		"""Constructs a :class:`Request <Request>`, prepares it and sends it.
-		Returns :class:`Response <Response>` object.
-		...
-		"""
-		# Create the Request.
-		req = Request(
-			method=method.upper(),
-			url=url,
-			headers=headers,
-			files=files,
-			data=data or {},
-			json=json,
-			params=params or {},
-			auth=auth,
-			cookies=cookies,
-			hooks=hooks,
-		)
-		prep = self.prepare_request(req)
+    ...
+    def request(self, method, url,
+            params=None, data=None, headers=None, cookies=None, files=None,
+            auth=None, timeout=None, allow_redirects=True, proxies=None,
+            hooks=None, stream=None, verify=None, cert=None, json=None):
+        """Constructs a :class:`Request <Request>`, prepares it and sends it.
+        Returns :class:`Response <Response>` object.
+        ...
+        """
+        # Create the Request.
+        req = Request(
+            method=method.upper(),
+            url=url,
+            headers=headers,
+            files=files,
+            data=data or {},
+            json=json,
+            params=params or {},
+            auth=auth,
+            cookies=cookies,
+            hooks=hooks,
+        )
+        prep = self.prepare_request(req)
 
-		proxies = proxies or {}
+        proxies = proxies or {}
 
-		settings = self.merge_environment_settings(
-			prep.url, proxies, stream, verify, cert
-		)
+        settings = self.merge_environment_settings(
+            prep.url, proxies, stream, verify, cert
+        )
 
-		# Send the request.
-		send_kwargs = {
-			'timeout': timeout,
-			'allow_redirects': allow_redirects,
-		}
-		send_kwargs.update(settings)
-		resp = self.send(prep, **send_kwargs)
+        # Send the request.
+        send_kwargs = {
+            'timeout': timeout,
+            'allow_redirects': allow_redirects,
+        }
+        send_kwargs.update(settings)
+        resp = self.send(prep, **send_kwargs)
 
-		return resp
+        return resp
 
-	def get(self, url, **kwargs):
-		r"""Sends a GET request. Returns :class:`Response` object.
+    def get(self, url, **kwargs):
+        r"""Sends a GET request. Returns :class:`Response` object.
 
-		:param url: URL for the new :class:`Request` object.
-		:param \*\*kwargs: Optional arguments that ``request`` takes.
-		:rtype: requests.Response
-		"""
+        :param url: URL for the new :class:`Request` object.
+        :param \*\*kwargs: Optional arguments that ``request`` takes.
+        :rtype: requests.Response
+        """
 
-		kwargs.setdefault('allow_redirects', True)
-		return self.request('GET', url, **kwargs)
-		...
+        kwargs.setdefault('allow_redirects', True)
+        return self.request('GET', url, **kwargs)
+        ...
     
-	...
-	def post(self, url, data=None, json=None, **kwargs):
-		r"""Sends a POST request. Returns :class:`Response` object.
+    ...
+    def post(self, url, data=None, json=None, **kwargs):
+        r"""Sends a POST request. Returns :class:`Response` object.
 
-		:param url: URL for the new :class:`Request` object.
-		:param data: (optional) Dictionary, list of tuples, bytes, or file-like
-			object to send in the body of the :class:`Request`.
-		:param json: (optional) json to send in the body of the :class:`Request`.
-		:param \*\*kwargs: Optional arguments that ``request`` takes.
-		:rtype: requests.Response
-		"""
+        :param url: URL for the new :class:`Request` object.
+        :param data: (optional) Dictionary, list of tuples, bytes, or file-like
+            object to send in the body of the :class:`Request`.
+        :param json: (optional) json to send in the body of the :class:`Request`.
+        :param \*\*kwargs: Optional arguments that ``request`` takes.
+        :rtype: requests.Response
+        """
 
-		return self.request('POST', url, data=data, json=json, **kwargs)
-		...
+        return self.request('POST', url, data=data, json=json, **kwargs)
+        ...
     
-	...
-	def close(self):
-		"""Closes all adapters and as such the session"""
-		for v in self.adapters.values():
-			v.close()
-	...
+    ...
+    def close(self):
+        """Closes all adapters and as such the session"""
+        for v in self.adapters.values():
+            v.close()
+    ...
 ```
 
 Session是什么？我们摘取了部分内容，概括一下它的功能：支持持久性的cookies，使用urllib3连接池功能，对参数进行配置，为request对象提供参数，拥有所有的请求方法等。原来我们所有的设置操作，真真正正开始执行是在Session对象里。
@@ -803,7 +803,7 @@ Session是什么？我们摘取了部分内容，概括一下它的功能：支�
 
 ```
 with expression [as variable]:
-	with-block
+    with-block
 ```
 
 with语句中的[as variable]是可选的，如果指定了as variable说明符，则variable就是上下文管理器expression.\_\_enter\_\_()方法返回的对象。with-block是执行语句，with-block执行完毕时，with语句会自动调用expression.\_\_exit\_\_()方法进行资源清理。
@@ -815,10 +815,10 @@ with语句中的[as variable]是可选的，如果指定了as variable说明符�
 from . import sessions
 
 def request(method, url, **kwargs):
-	"""Constructs and sends a :class:`Request <Request>`."""
-	...
-	with sessions.Session() as session:
-		return session.request(method=method, url=url, **kwargs)
+    """Constructs and sends a :class:`Request <Request>`."""
+    ...
+    with sessions.Session() as session:
+        return session.request(method=method, url=url, **kwargs)
 ...
 
 --------------------------------------------------------------------------------------------
@@ -826,20 +826,20 @@ def request(method, url, **kwargs):
 # sessions.py
 class Session(SessionRedirectMixin):
 
-	...
+    ...
     def __enter__(self):
-		return self
+        return self
 
-	def __exit__(self, *args):
-		self.close()
-		...
+    def __exit__(self, *args):
+        self.close()
+        ...
     
-	...
-	def close(self):
-		"""Closes all adapters and as such the session"""
-		for v in self.adapters.values():
-			v.close()
-	...
+    ...
+    def close(self):
+        """Closes all adapters and as such the session"""
+        for v in self.adapters.values():
+            v.close()
+    ...
 ```
 
 结合with语句，该部分代码的实现一目了然：
@@ -863,62 +863,62 @@ __以上就是with语句的用途，这部分内容大家务必要理解，因�
 # sessions.py
 class Session(SessionRedirectMixin):
  
-	...
-	def __init__(self):
+    ...
+    def __init__(self):
 
-		#: A case-insensitive dictionary of headers to be sent on each
-		#: :class:`Request <Request>` sent from this
-		#: :class:`Session <Session>`.
-		self.headers = default_headers()
+        #: A case-insensitive dictionary of headers to be sent on each
+        #: :class:`Request <Request>` sent from this
+        #: :class:`Session <Session>`.
+        self.headers = default_headers()
 
-		#: Default Authentication tuple or object to attach to
-		#: :class:`Request <Request>`.
-		self.auth = None
+        #: Default Authentication tuple or object to attach to
+        #: :class:`Request <Request>`.
+        self.auth = None
 
-		#: Dictionary mapping protocol or protocol and host to the URL of the proxy
-		#: (e.g. {'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'}) to
-		#: be used on each :class:`Request <Request>`.
-		self.proxies = {}
+        #: Dictionary mapping protocol or protocol and host to the URL of the proxy
+        #: (e.g. {'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'}) to
+        #: be used on each :class:`Request <Request>`.
+        self.proxies = {}
 
-		#: Event-handling hooks.
-		self.hooks = default_hooks()
+        #: Event-handling hooks.
+        self.hooks = default_hooks()
 
-		#: Dictionary of querystring data to attach to each
-		#: :class:`Request <Request>`. The dictionary values may be lists for
-		#: representing multivalued query parameters.
-		self.params = {}
+        #: Dictionary of querystring data to attach to each
+        #: :class:`Request <Request>`. The dictionary values may be lists for
+        #: representing multivalued query parameters.
+        self.params = {}
 
-		#: Stream response content default.
-		self.stream = False
+        #: Stream response content default.
+        self.stream = False
 
-		#: SSL Verification default.
-		self.verify = True
+        #: SSL Verification default.
+        self.verify = True
 
-		#: SSL client certificate default, if String, path to ssl client
-		#: cert file (.pem). If Tuple, ('cert', 'key') pair.
-		self.cert = None
+        #: SSL client certificate default, if String, path to ssl client
+        #: cert file (.pem). If Tuple, ('cert', 'key') pair.
+        self.cert = None
 
-		#: Maximum number of redirects allowed. If the request exceeds this
-		#: limit, a :class:`TooManyRedirects` exception is raised.
-		#: This defaults to requests.models.DEFAULT_REDIRECT_LIMIT, which is
-		#: 30.
-		self.max_redirects = DEFAULT_REDIRECT_LIMIT
+        #: Maximum number of redirects allowed. If the request exceeds this
+        #: limit, a :class:`TooManyRedirects` exception is raised.
+        #: This defaults to requests.models.DEFAULT_REDIRECT_LIMIT, which is
+        #: 30.
+        self.max_redirects = DEFAULT_REDIRECT_LIMIT
 
-		#: Trust environment settings for proxy configuration, default
-		#: authentication and similar.
-		self.trust_env = True
+        #: Trust environment settings for proxy configuration, default
+        #: authentication and similar.
+        self.trust_env = True
 
-		#: A CookieJar containing all currently outstanding cookies set on this
-		#: session. By default it is a
-		#: :class:`RequestsCookieJar <requests.cookies.RequestsCookieJar>`, but
-		#: may be any other ``cookielib.CookieJar`` compatible object.
-		self.cookies = cookiejar_from_dict({})
+        #: A CookieJar containing all currently outstanding cookies set on this
+        #: session. By default it is a
+        #: :class:`RequestsCookieJar <requests.cookies.RequestsCookieJar>`, but
+        #: may be any other ``cookielib.CookieJar`` compatible object.
+        self.cookies = cookiejar_from_dict({})
 
-		# Default connection adapters.
-		self.adapters = OrderedDict()
-		self.mount('https://', HTTPAdapter())
-		self.mount('http://', HTTPAdapter())
-		...
+        # Default connection adapters.
+        self.adapters = OrderedDict()
+        self.mount('https://', HTTPAdapter())
+        self.mount('http://', HTTPAdapter())
+        ...
 ```
 
 初始化方法主要实现了参数的默认设置，包括headers，auth，proxies，stream，verify，cookies，hooks等等。比如我们在发起一次请求时没有设置header参数，那么header就会使用默认参数，由方法default_headers()来设置：
@@ -926,37 +926,37 @@ class Session(SessionRedirectMixin):
 ```
 # sessions.py
 class Session(SessionRedirectMixin):
-	...
-	def __init__(self):
-		#: A case-insensitive dictionary of headers to be sent on each
-		#: :class:`Request <Request>` sent from this
-		#: :class:`Session <Session>`.
-		self.headers = default_headers()
-		...
-	...
+    ...
+    def __init__(self):
+        #: A case-insensitive dictionary of headers to be sent on each
+        #: :class:`Request <Request>` sent from this
+        #: :class:`Session <Session>`.
+        self.headers = default_headers()
+        ...
+    ...
 
 --------------------------------------------------------------------------------------------
     
 # utils.py
 ...
 def default_user_agent(name="python-requests"):
-	"""
-	Return a string representing the default user agent.
+    """
+    Return a string representing the default user agent.
 
-	:rtype: str
-	"""
-	return '%s/%s' % (name, __version__)
+    :rtype: str
+    """
+    return '%s/%s' % (name, __version__)
 
 def default_headers():
-	"""
-	:rtype: requests.structures.CaseInsensitiveDict
-	"""
-	return CaseInsensitiveDict({
-		'User-Agent': default_user_agent(),
-		'Accept-Encoding': ', '.join(('gzip', 'deflate')),
-		'Accept': '*/*',
-		'Connection': 'keep-alive',
-	})
+    """
+    :rtype: requests.structures.CaseInsensitiveDict
+    """
+    return CaseInsensitiveDict({
+        'User-Agent': default_user_agent(),
+        'Accept-Encoding': ', '.join(('gzip', 'deflate')),
+        'Accept': '*/*',
+        'Connection': 'keep-alive',
+    })
 ...
 ```
 
@@ -967,13 +967,13 @@ hooks初始化：
 ```
 # sessions.py
 class Session(SessionRedirectMixin):
-	...
-	def __init__(self):
-		...
-		#: Event-handling hooks.
-		self.hooks = default_hooks()
-		...
-	...
+    ...
+    def __init__(self):
+    ...
+        #: Event-handling hooks.
+        self.hooks = default_hooks()
+        ...
+    ...
     
 --------------------------------------------------------------------------------------------
 
@@ -983,12 +983,12 @@ class Session(SessionRedirectMixin):
 Available hooks:
 
 ``response``:
-	The response generated from a Request.
+    The response generated from a Request.
 """
 HOOKS = ['response']
 
 def default_hooks():
-	return {event: [] for event in HOOKS}
+    return {event: [] for event in HOOKS}
 ...
 ```
 
@@ -1000,10 +1000,10 @@ hooks意为事件挂钩，可以用来操控部分请求过程或者信号事件
 
 ```
 >>> def hooks1(r, *args, **kwargs):
-... 	print("hooks1 url=" + r.url)
+...     print("hooks1 url=" + r.url)
 ... 
 >>> def hooks2(r, *args, **kwargs):
-... 	print("hooks2 encoding=" + r.encoding)
+...     print("hooks2 encoding=" + r.encoding)
 ... 
 >>> hooks = dict(response=[hooks1,hooks2])
 >>> requests.get("http://httpbin.org", hooks=hooks)
@@ -1017,40 +1017,40 @@ cookies初始化：
 ```
 # sessions.py
 class Session(SessionRedirectMixin):
-	...
-	def __init__(self):
-		...
-		#: A CookieJar containing all currently outstanding cookies set on this
-		#: session. By default it is a
-		#: :class:`RequestsCookieJar <requests.cookies.RequestsCookieJar>`, but
-		#: may be any other ``cookielib.CookieJar`` compatible object.
-		self.cookies = cookiejar_from_dict({})
-		...
-	...
+    ...
+    def __init__(self):
+        ...
+        #: A CookieJar containing all currently outstanding cookies set on this
+        #: session. By default it is a
+        #: :class:`RequestsCookieJar <requests.cookies.RequestsCookieJar>`, but
+        #: may be any other ``cookielib.CookieJar`` compatible object.
+        self.cookies = cookiejar_from_dict({})
+        ...
+    ...
     
 --------------------------------------------------------------------------------------------
 
 # cookies.py
 ...
 def cookiejar_from_dict(cookie_dict, cookiejar=None, overwrite=True):
-	"""Returns a CookieJar from a key/value dictionary.
+    """Returns a CookieJar from a key/value dictionary.
 	
-	:param cookie_dict: Dict of key/values to insert into CookieJar.
-	:param cookiejar: (optional) A cookiejar to add the cookies to.
-	:param overwrite: (optional) If False, will not replace cookies
-		already in the jar with new ones.
-	:rtype: CookieJar
-	"""
-	if cookiejar is None:
-		cookiejar = RequestsCookieJar()
+    :param cookie_dict: Dict of key/values to insert into CookieJar.
+    :param cookiejar: (optional) A cookiejar to add the cookies to.
+    :param overwrite: (optional) If False, will not replace cookies
+        already in the jar with new ones.
+    :rtype: CookieJar
+    """
+    if cookiejar is None:
+        cookiejar = RequestsCookieJar()
 
-	if cookie_dict is not None:
-		names_from_jar = [cookie.name for cookie in cookiejar]
-		for name in cookie_dict:
-			if overwrite or (name not in names_from_jar):
-				cookiejar.set_cookie(create_cookie(name, cookie_dict[name]))
+    if cookie_dict is not None:
+        names_from_jar = [cookie.name for cookie in cookiejar]
+        for name in cookie_dict:
+            if overwrite or (name not in names_from_jar):
+                cookiejar.set_cookie(create_cookie(name, cookie_dict[name]))
 
-	return cookiejar
+    return cookiejar
 ...
 ```
 
@@ -1061,39 +1061,39 @@ adapters初始化：
 ```
 # sessions.py
 class Session(SessionRedirectMixin):
-	...
-	def __init__(self):
-		...
-		# Default connection adapters.
-		self.adapters = OrderedDict()
-		self.mount('https://', HTTPAdapter())
-		self.mount('http://', HTTPAdapter())
-		...
+    ...
+    def __init__(self):
+        ...
+        # Default connection adapters.
+        self.adapters = OrderedDict()
+        self.mount('https://', HTTPAdapter())
+        self.mount('http://', HTTPAdapter())
+        ...
     ...
 
-	...
-	def mount(self, prefix, adapter):
-		"""Registers a connection adapter to a prefix.
+    ...
+    def mount(self, prefix, adapter):
+        """Registers a connection adapter to a prefix.
 
-		Adapters are sorted in descending order by prefix length.
-		"""
-		self.adapters[prefix] = adapter
-		keys_to_move = [k for k in self.adapters if len(k) < len(prefix)]
+        Adapters are sorted in descending order by prefix length.
+        """
+        self.adapters[prefix] = adapter
+        keys_to_move = [k for k in self.adapters if len(k) < len(prefix)]
 
-		for key in keys_to_move:
-			self.adapters[key] = self.adapters.pop(key)
+        for key in keys_to_move:
+            self.adapters[key] = self.adapters.pop(key)
 
 --------------------------------------------------------------------------------------------
 
 # adapters.py
 class HTTPAdapter(BaseAdapter):
-	"""The built-in HTTP Adapter for urllib3.
+    """The built-in HTTP Adapter for urllib3.
 
-	Provides a general-case interface for Requests sessions to contact HTTP and
-	HTTPS urls by implementing the Transport Adapter interface. This class will
-	usually be created by the :class:`Session <Session>` class under the
-	covers.
-	...
+    Provides a general-case interface for Requests sessions to contact HTTP and
+    HTTPS urls by implementing the Transport Adapter interface. This class will
+    usually be created by the :class:`Session <Session>` class under the
+    covers.
+    ...
 ...
 ```
 
@@ -1116,60 +1116,60 @@ Session对象实例化后指向session，接着调用了其内部方法request�
 from . import sessions
 
 def request(method, url, **kwargs):
-	"""Constructs and sends a :class:`Request <Request>`."""
-	...
-	with sessions.Session() as session:
-		return session.request(method=method, url=url, **kwargs)
+    """Constructs and sends a :class:`Request <Request>`."""
+    ...
+    with sessions.Session() as session:
+        return session.request(method=method, url=url, **kwargs)
 ...
 
 --------------------------------------------------------------------------------------------
 
 # sessions.py
 class Session(SessionRedirectMixin):
-	"""A Requests session.
-	Provides cookie persistence, connection-pooling, and configuration.
-	...
-	"""
-	...
-	def request(self, method, url,
-			params=None, data=None, headers=None, cookies=None, files=None,
-			auth=None, timeout=None, allow_redirects=True, proxies=None,
-			hooks=None, stream=None, verify=None, cert=None, json=None):
-		"""Constructs a :class:`Request <Request>`, prepares it and sends it.
-		Returns :class:`Response <Response>` object.
-		...
-		:rtype: requests.Response
-		"""
-		# Create the Request.
-		req = Request(
-			method=method.upper(),
-			url=url,
-			headers=headers,
-			files=files,
-			data=data or {},
-			json=json,
-			params=params or {},
-			auth=auth,
-			cookies=cookies,
-			hooks=hooks,
-		)
-		prep = self.prepare_request(req)
+    """A Requests session.
+    Provides cookie persistence, connection-pooling, and configuration.
+    ...
+    """
+    ...
+    def request(self, method, url,
+            params=None, data=None, headers=None, cookies=None, files=None,
+            auth=None, timeout=None, allow_redirects=True, proxies=None,
+            hooks=None, stream=None, verify=None, cert=None, json=None):
+        """Constructs a :class:`Request <Request>`, prepares it and sends it.
+        Returns :class:`Response <Response>` object.
+        ...
+        :rtype: requests.Response
+        """
+        # Create the Request.
+        req = Request(
+            method=method.upper(),
+            url=url,
+            headers=headers,
+            files=files,
+            data=data or {},
+            json=json,
+            params=params or {},
+            auth=auth,
+            cookies=cookies,
+            hooks=hooks,
+        )
+        prep = self.prepare_request(req)
 
-		proxies = proxies or {}
+        proxies = proxies or {}
 
-		settings = self.merge_environment_settings(
-			prep.url, proxies, stream, verify, cert
-		)
+        settings = self.merge_environment_settings(
+            prep.url, proxies, stream, verify, cert
+        )
 
-		# Send the request.
-		send_kwargs = {
-			'timeout': timeout,
-			'allow_redirects': allow_redirects,
-		}
-		send_kwargs.update(settings)
-		resp = self.send(prep, **send_kwargs)
+        # Send the request.
+        send_kwargs = {
+            'timeout': timeout,
+            'allow_redirects': allow_redirects,
+        }
+        send_kwargs.update(settings)
+        resp = self.send(prep, **send_kwargs)
 
-		return resp
+        return resp
  ...
 ```
 
@@ -1178,23 +1178,23 @@ class Session(SessionRedirectMixin):
 ```
 # sessions.py
 class Session(SessionRedirectMixin):
-	...
-	def request(self, method, url, ...):
-		...
-		# Create the Request.
-		req = Request(
-			method=method.upper(),
-			url=url,
-			headers=headers,
-			files=files,
-			data=data or {},
-			json=json,
-			params=params or {},
-			auth=auth,
-			cookies=cookies,
-			hooks=hooks,
-		)
-		...
+    ...
+    def request(self, method, url, ...):
+        ...
+        # Create the Request.
+        req = Request(
+            method=method.upper(),
+            url=url,
+            headers=headers,
+            files=files,
+            data=data or {},
+            json=json,
+            params=params or {},
+            auth=auth,
+            cookies=cookies,
+            hooks=hooks,
+        )
+        ...
 ... 
 
 --------------------------------------------------------------------------------------------
@@ -1202,36 +1202,36 @@ class Session(SessionRedirectMixin):
 # models.py
 ...
 class Request(RequestHooksMixin):
-	"""A user-created :class:`Request <Request>` object.
-	Used to prepare a :class:`PreparedRequest <PreparedRequest>`, which is sent to the 							server.
-	...
-	"""
+    """A user-created :class:`Request <Request>` object.
+    Used to prepare a :class:`PreparedRequest <PreparedRequest>`, which is sent to the 							server.
+    ...
+    """
 
-	def __init__(self,
-			method=None, url=None, headers=None, files=None, data=None,
-			params=None, auth=None, cookies=None, hooks=None, json=None):
+    def __init__(self,
+            method=None, url=None, headers=None, files=None, data=None,
+            params=None, auth=None, cookies=None, hooks=None, json=None):
 
-		# Default empty dicts for dict params.
-		data = [] if data is None else data
-		files = [] if files is None else files
-		headers = {} if headers is None else headers
-		params = {} if params is None else params
-		hooks = {} if hooks is None else hooks
+        # Default empty dicts for dict params.
+        data = [] if data is None else data
+        files = [] if files is None else files
+        headers = {} if headers is None else headers
+        params = {} if params is None else params
+        hooks = {} if hooks is None else hooks
 
-		self.hooks = default_hooks()
-		for (k, v) in list(hooks.items()):
-			self.register_hook(event=k, hook=v)
+        self.hooks = default_hooks()
+        for (k, v) in list(hooks.items()):
+            self.register_hook(event=k, hook=v)
 
-		self.method = method
-		self.url = url
-		self.headers = headers
-		self.files = files
-		self.data = data
-		self.json = json
-		self.params = params
-		self.auth = auth
-		self.cookies = cookies
-		...
+        self.method = method
+        self.url = url
+        self.headers = headers
+        self.files = files
+        self.data = data
+        self.json = json
+        self.params = params
+        self.auth = auth
+        self.cookies = cookies
+        ...
 ...
 ```
 
@@ -1243,61 +1243,62 @@ Request对象实例构造完成后，继续调用了prepare_request方法：
 # sessions.py
       
 class Session(SessionRedirectMixin):
-	"""A Requests session.
-	Provides cookie persistence, connection-pooling, and configuration.
-	...
-	"""
+    """A Requests session.
+    Provides cookie persistence, connection-pooling, and configuration.
+    ...
+    """
     
-	...
-	def prepare_request(self, request):
-		"""Constructs a :class:`PreparedRequest <PreparedRequest>` for
-		transmission and returns it. The :class:`PreparedRequest` has settings
-		merged from the :class:`Request <Request>` instance and those of the
-		:class:`Session`.
+    ...
+    def prepare_request(self, request):
+        """Constructs a :class:`PreparedRequest <PreparedRequest>` for
+        transmission and returns it. The :class:`PreparedRequest` has settings
+        merged from the :class:`Request <Request>` instance and those of the
+        :class:`Session`.
 
-		:param request: :class:`Request` instance to prepare with this
-			session's settings.
-		:rtype: requests.PreparedRequest
-		"""
+        :param request: :class:`Request` instance to prepare with this
+            session's settings.
+        :rtype: requests.PreparedRequest
+        """
 		cookies = request.cookies or {}
 
-		# Bootstrap CookieJar.
-		if not isinstance(cookies, cookielib.CookieJar):
-			cookies = cookiejar_from_dict(cookies)
+        # Bootstrap CookieJar.
+        if not isinstance(cookies, cookielib.CookieJar):
+            cookies = cookiejar_from_dict(cookies)
 
-		# Merge with session cookies
-		merged_cookies = merge_cookies(
-			merge_cookies(RequestsCookieJar(), self.cookies), cookies)
+        # Merge with session cookies
+        merged_cookies = merge_cookies(
+            merge_cookies(RequestsCookieJar(), self.cookies), cookies)
+            
+        # Set environment's basic authentication if not explicitly set.
+        auth = request.auth
+        if self.trust_env and not auth and not self.auth:
+            auth = get_netrc_auth(request.url)
 
-		# Set environment's basic authentication if not explicitly set.
-		auth = request.auth
-		if self.trust_env and not auth and not self.auth:
-			auth = get_netrc_auth(request.url)
-
-		p = PreparedRequest()
-		p.prepare(
-			method=request.method.upper(),
-			url=request.url,
-			files=request.files,
-			data=request.data,
-			json=request.json,
-			headers=merge_setting(request.headers, self.headers, 																				dict_class=CaseInsensitiveDict),
-			params=merge_setting(request.params, self.params),
-			auth=merge_setting(auth, self.auth),
-			cookies=merged_cookies,
-			hooks=merge_hooks(request.hooks, self.hooks),
-		)
-		return p
+        p = PreparedRequest()
+        p.prepare(
+            method=request.method.upper(),
+            url=request.url,
+            files=request.files,
+            data=request.data,
+            json=request.json,
+            headers=merge_setting(request.headers, self.headers,
+            dict_class=CaseInsensitiveDict),
+            params=merge_setting(request.params, self.params),
+            auth=merge_setting(auth, self.auth),
+            cookies=merged_cookies,
+            hooks=merge_hooks(request.hooks, self.hooks),
+        )
+        return p
       
     def request(self, method, url, ...):
-		"""Constructs a :class:`Request <Request>`, prepares it and sends it.
-		Returns :class:`Response <Response>` object.
-		...
-		:rtype: requests.Response
-		"""
-		...
+        """Constructs a :class:`Request <Request>`, prepares it and sends it.
+        Returns :class:`Response <Response>` object.
+        ...
+        :rtype: requests.Response
+        """
+        ...
         prep = self.prepare_request(req)
-		...
+        ...
 ...
 ```
 
@@ -1309,39 +1310,39 @@ PreparedRequest对象构造完成后，最后再通过send方法将其发送出�
 # sessions.py
       
 class Session(SessionRedirectMixin):
-	"""A Requests session.
-	Provides cookie persistence, connection-pooling, and configuration.
-	...
-	"""
-	...
-	def request(self, method, url, ...):
-		"""Constructs a :class:`Request <Request>`, prepares it and sends it.
-		Returns :class:`Response <Response>` object.
-		...
-		:rtype: requests.Response
-		"""
-		...
-		resp = self.send(prep, **send_kwargs)
-		return resp
-		...
+    """A Requests session.
+    Provides cookie persistence, connection-pooling, and configuration.
+    ...
+    """
+    ...
+    def request(self, method, url, ...):
+        """Constructs a :class:`Request <Request>`, prepares it and sends it.
+        Returns :class:`Response <Response>` object.
+        ...
+        :rtype: requests.Response
+        """
+        ...
+        resp = self.send(prep, **send_kwargs)
+        return resp
+        ...
     
-		...
-		def send(self, request, **kwargs):
-		"""Send a given PreparedRequest.
+        ...
+        def send(self, request, **kwargs):
+        """Send a given PreparedRequest.
 
-		:rtype: requests.Response
-		"""
-		...
-		# Get the appropriate adapter to use
-		adapter = self.get_adapter(url=request.url)
+        :rtype: requests.Response
+        """
+        ...
+        # Get the appropriate adapter to use
+        adapter = self.get_adapter(url=request.url)
 				
-		...
+        ...
         
-		# Send the request
-		r = adapter.send(request, **kwargs)
-		...
+        # Send the request
+        r = adapter.send(request, **kwargs)
+        ...
         
-		return r
+        return r
 ...
 ```
 
@@ -1362,11 +1363,12 @@ send方法接收PreparedRequest对象，然后根据该对象的url参数获取�
 ```
 # test_requests.py
 def test_DIGEST_HTTP_200_OK_GET(self, httpbin):
-		...
-		s = requests.session()
-		s.auth = HTTPDigestAuth('user', 'pass')
-		r = s.get(url)
-		assert r.status_code == 200
+    ...
+        ...
+        s = requests.session()
+        s.auth = HTTPDigestAuth('user', 'pass')
+        r = s.get(url)
+        assert r.status_code == 200
 ...
 
 --------------------------------------------------------------------------------------------
@@ -1374,31 +1376,31 @@ def test_DIGEST_HTTP_200_OK_GET(self, httpbin):
 # sessions.py
 ...
 class Session(SessionRedirectMixin):
-	"""A Requests session.
-	Provides cookie persistence, connection-pooling, and configuration.
-	...
-	"""
-	...
-	def get(self, url, **kwargs):
-		r"""Sends a GET request. Returns :class:`Response` object.
+    """A Requests session.
+    Provides cookie persistence, connection-pooling, and configuration.
+    ...
+    """
+    ...
+    def get(self, url, **kwargs):
+        r"""Sends a GET request. Returns :class:`Response` object.
 
-		:param url: URL for the new :class:`Request` object.
-		:param \*\*kwargs: Optional arguments that ``request`` takes.
-		:rtype: requests.Response
-		"""
+        :param url: URL for the new :class:`Request` object.
+        :param \*\*kwargs: Optional arguments that ``request`` takes.
+        :rtype: requests.Response
+        """
 
-		kwargs.setdefault('allow_redirects', True)
-		return self.request('GET', url, **kwargs)
-		...
+        kwargs.setdefault('allow_redirects', True)
+        return self.request('GET', url, **kwargs)
+        ...
 ...
 
 def session():
-	"""
-	Returns a :class:`Session` for context-management.
+    """
+    Returns a :class:`Session` for context-management.
 
-	:rtype: Session
-	"""
-	return Session()
+    :rtype: Session
+    """
+    return Session()
 ```
 
 从代码中可以看出，测试例程调用session()方法直接返回了Session对象s，然后继续调用get方法。这跟我们常规调用get方法有什么区别呢？好像唯一区别就在与常规调用多了一步with语句的实现：
@@ -1408,18 +1410,18 @@ def session():
 from . import sessions
 
 def request(method, url, **kwargs):
-	"""Constructs and sends a :class:`Request <Request>`."""
-	...
-	with sessions.Session() as session:
-		return session.request(method=method, url=url, **kwargs)
+    """Constructs and sends a :class:`Request <Request>`."""
+    ...
+    with sessions.Session() as session:
+        return session.request(method=method, url=url, **kwargs)
 		
 def get(url, params=None, **kwargs):
-	r"""Sends a GET request.
-	...
-	:rtype: requests.Response
-	"""    
-	kwargs.setdefault('allow_redirects', True)
-		return request('get', url, params=params, **kwargs)
+    r"""Sends a GET request.
+    ...
+    :rtype: requests.Response
+    """
+    kwargs.setdefault('allow_redirects', True)
+        return request('get', url, params=params, **kwargs)
 ...
 
 --------------------------------------------------------------------------------------------
@@ -1427,18 +1429,18 @@ def get(url, params=None, **kwargs):
 # sessions.py
 ...
 class Session(SessionRedirectMixin):
-	"""A Requests session.
-	Provides cookie persistence, connection-pooling, and configuration.
-	...
-	"""
+    """A Requests session.
+    Provides cookie persistence, connection-pooling, and configuration.
+    ...
+    """
 	
-	...
-	def get(self, url, **kwargs):
-		r"""Sends a GET request. Returns :class:`Response` object."""
+    ...
+    def get(self, url, **kwargs):
+        r"""Sends a GET request. Returns :class:`Response` object."""
 
-		kwargs.setdefault('allow_redirects', True)
-		return self.request('GET', url, **kwargs)
-		...
+        kwargs.setdefault('allow_redirects', True)
+        return self.request('GET', url, **kwargs)
+        ...
 ...
 ```
 
@@ -1453,9 +1455,9 @@ class Session(SessionRedirectMixin):
 >>> r = s.get("http://httpbin.org/cookies")
 >>> print(r.text)
 {
-	"cookies": {
-		"sessioncookie": "123456789"
-	}
+    "cookies": {
+        "sessioncookie": "123456789"
+    }
 }
 
 --------------------------------------------------------------------------------------------
@@ -1465,7 +1467,7 @@ class Session(SessionRedirectMixin):
 >>> r = requests.get("http://httpbin.org/cookies")
 >>> print(r.text)
 {
- 	"cookies": {}
+    "cookies": {}
 }
 ```
 
