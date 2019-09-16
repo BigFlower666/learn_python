@@ -260,9 +260,7 @@ def httpbin(httpbin):
 
 第一次接触pytest这个模块，看了半天没明白是怎么用的，于是就网上查查查。
 
-当我们调用pytest 测试test_requests.py文件时，文件中每一个test开头的方法都会被调用并执行，当然也包括test_DIGEST_HTTP_200_OK_GET(self, httpbin)这个方法。这时你会发现，这里出现了好多个httpbin，第一眼看
-
-httpbin像一个方法，因为url=httpbin('digest-auth', 'auth', 'user', 'pass', authtype, 'never'),但是conftest.py中的 方法def htttpbin(httpbin)却只定义了一个参数，参数名也叫作httpbin…看到这里，我想此时的你也会跟我一样感到非常困惑。
+当我们调用pytest 测试test_requests.py文件时，文件中每一个test开头的方法都会被调用并执行，当然也包括test_DIGEST_HTTP_200_OK_GET(self, httpbin)这个方法。这时你会发现，这里出现了好多个httpbin，第一眼看httpbin像一个方法，因为url=httpbin('digest-auth', 'auth', 'user', 'pass', authtype, 'never'),但是conftest.py中的 方法def htttpbin(httpbin)却只定义了一个参数，参数名也叫作httpbin…看到这里，我想此时的你也会跟我一样感到非常困惑。
 
 好在pytest提供了一系列调试工具，我们可以利用它去调试下httpbin到底是什么东东。先将set_trace()方法插入到代码中，如下：
 
@@ -327,7 +325,7 @@ Digest realm="me@kennethreitz.com", nonce="46f593d6aedc8fe983c2430da4ddda3f", qo
 ===================== 1 passed in 11.91 seconds =====================
 ```
 
-在调试窗口PDB set_trace中可以看到，首先被调用的是的conftest.py中的httpbin()方法，我们在（pdb）中输入httpbin变量，结果返回了<pytest_httpbin.serve.Server object at 0x10a0744e0>。然后继续调用方法test_DIGEST_HTTP_200_OK_GET()，输入httpbin变量，结果返回了<function prepare_url.<locals>.inner at 0x1096e7268>。
+在调试窗口PDB set_trace中可以看到，首先被调用的是的conftest.py中的httpbin()方法，我们在（pdb）中输入httpbin变量，结果返回了<pytest_httpbin.serve.Server object at 0x10a0744e0>。然后继续调用方法test_DIGEST_HTTP_200_OK_GET()，输入httpbin变量，结果返回了<function prepare_url.\<locals\>.inner at 0x1096e7268>。
 
 经过调试后，httpbin的面貌渐渐变得清晰了：
 
@@ -384,7 +382,7 @@ Digest realm="me@kennethreitz.com", nonce="46f593d6aedc8fe983c2430da4ddda3f", qo
 
   WSGI全称是Web Server Gateway Interface,它其实是一个标准，介于web应用与web服务器之间。只要我们遵循WSGI接口标准设计web应用，就无需在意TCP连接，HTTP请求等等底层的实现，全权交由web服务器即可。
 
-  上述代码实现的逻辑已经比较清晰了，httpbin对象被实例化的时候调用\_\_init\_\_(self, host='127.0.0.1', port=0, application=None, **kwargs)。
+  上述代码实现的逻辑已经比较清晰了，httpbin对象被实例化的时候调用\_\_init\_\_(self, host='127.0.0.1',port=0, application=None, **kwargs)。
 
   - host主机号为本地回环地址”127.0.0.1“。
   - port端口号默认为0，最终由系统来确定port = int(os.environ[self.port_envvar])。
@@ -394,9 +392,8 @@ Digest realm="me@kennethreitz.com", nonce="46f593d6aedc8fe983c2430da4ddda3f", qo
 
   start(self)方法的作用是启动线程。
 
-  url(self)方法使用了装饰器@property，目的是将方法url(self)变成属性来调用，返回本地服务器地址
+  url(self)方法使用了装饰器@property，目的是将方法url(self)变成属性来调用，返回本地服务器地址"http://127.0.0.1:xxxx"。
 
-  "http://127.0.0.1:xxxx"。
 
 emmm...感觉讲了很多，可是还是没搞清楚pytest是如何工作的啊？接下来我们就来讲这块内容，在此之前，我们再贴一下前面的代码：
 
