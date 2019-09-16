@@ -465,9 +465,7 @@ def httpbin(request):
 
 - 测试用例test_DIGEST_HTTP_200_OK_GET(self, httpbin)被执行，fixture对象被注入，httpbin=inner。
 
-- 获取url对象:url = inner('digest-auth', 'auth', 'user', 'pass', authtype, 'never')，
-
-    urljoin(httpbin_url, '/'.join(suffix))被调用，最后返回url="http://127.0.0.1:xxxx/digest-auth/auth/user/pass/(authtype)/nerver", authtype为MD5 or SHA-256 or SHA-512。
+- 获取url对象:url = inner('digest-auth', 'auth', 'user', 'pass', authtype, 'never')，urljoin(httpbin_url, '/'.join(suffix))被调用，最后返回url="http://127.0.0.1:xxxx/digest-auth/auth/user/pass/(authtype)/nerver", authtype为MD5 or SHA-256 or SHA-512。
 
 httpbin分析花了不少时间，短短几行代码却衍生出了许多内容，让你不断扩充的知识应用于实际当中，我想这可能就是源码阅读的魅力所在。考虑到文字无法完全表达代码的抽象性，有些同学可能还没有理解这部分内容。为了照顾他们的心情，我又去画了张简易流程图来帮助理解。
 
@@ -547,32 +545,40 @@ from . import sessions
 def request(method, url, **kwargs):
     """Constructs and sends a :class:`Request <Request>`.
 
-    :param method: method for the new :class:`Request` object: ``GET``, ``OPTIONS``, 								``HEAD``, ``POST``, ``PUT``, ``PATCH``, or ``DELETE``.
+    :param method: method for the new :class:`Request` object: ``GET``, ``OPTIONS``, 
+        ``HEAD``, ``POST``, ``PUT``, ``PATCH``, or ``DELETE``.
     :param url: URL for the new :class:`Request` object.
     :param params: (optional) Dictionary, list of tuples or bytes to send
         in the query string for the :class:`Request`.
     :param data: (optional) Dictionary, list of tuples, bytes, or file-like
         object to send in the body of the :class:`Request`.
-    :param json: (optional) A JSON serializable Python object to send in the body of the 						:class:`Request`.
+    :param json: (optional) A JSON serializable Python object to send in the body of the 
+        :class:`Request`.
     :param headers: (optional) Dictionary of HTTP Headers to send with the :class:`Request`.
     :param cookies: (optional) Dict or CookieJar object to send with the :class:`Request`.
-    :param files: (optional) Dictionary of ``'name': file-like-objects`` (or ``{'name': 						file-tuple}``) for multipart encoding upload.
-        ``file-tuple`` can be a 2-tuple ``('filename', fileobj)``, 3-tuple ``('filename', 					fileobj, 'content_type')``
-        or a 4-tuple ``('filename', fileobj, 'content_type', custom_headers)``, where 							``'content-type'`` is a string
-        defining the content type of the given file and ``custom_headers`` a dict-like 							object containing additional headers to add for the file.
+    :param files: (optional) Dictionary of ``'name': file-like-objects`` (or ``{'name': 
+        file-tuple}``) for multipart encoding upload.
+        ``file-tuple`` can be a 2-tuple ``('filename', fileobj)``, 3-tuple ``('filename', 
+        fileobj, 'content_type')``or a 4-tuple ``('filename', fileobj, 'content_type', custom_headers)``, 
+        where ``'content-type'`` is a string
+        defining the content type of the given file and ``custom_headers`` a dict-like 
+        object containing additional headers to add for the file.
     :param auth: (optional) Auth tuple to enable Basic/Digest/Custom HTTP Auth.
     :param timeout: (optional) How many seconds to wait for the server to send data
         before giving up, as a float, or a :ref:`(connect timeout, read
         timeout) <timeouts>` tuple.
     :type timeout: float or tuple
-    :param allow_redirects: (optional) Boolean. Enable/disable 																			GET/OPTIONS/POST/PUT/PATCH/DELETE/HEAD redirection. Defaults to ``True``.
+    :param allow_redirects: (optional) Boolean. Enable/disable 	
+        GET/OPTIONS/POST/PUT/PATCH/DELETE/HEAD redirection. Defaults to ``True``.
     :type allow_redirects: bool
     :param proxies: (optional) Dictionary mapping protocol to the URL of the proxy.
     :param verify: (optional) Either a boolean, in which case it controls whether we verify
         the server's TLS certificate, or a string, in which case it must be a path
-        to a CA bundle to use. Defaults to ``True``.
-    :param stream: (optional) if ``False``, the response content will be immediately 								downloaded.
-    :param cert: (optional) if String, path to ssl client cert file (.pem). If Tuple, 							('cert', 'key') pair.
+        to a CA bundle to use. Defaults to ``True``
+    :param stream: (optional) if ``False``, the response content will be immediately 
+        downloaded.
+    :param cert: (optional) if String, path to ssl client cert file (.pem). If Tuple, 
+        ('cert', 'key') pair.
     :return: :class:`Response <Response>` object
     :rtype: requests.Response
 
@@ -596,9 +602,7 @@ def get(url, params=None, **kwargs):
 
 请求方法request包含了许多输入参数：
 
-- method：必选参数，该参数用于设置请求的方法，如"GET"，"OPTIONS"，"HEAD"，"POST"，"PUT"，
-
-  "PATCH"，"DELETE"。这里调用的是get方法，所以参数为"get"。
+- method：必选参数，该参数用于设置请求的方法，如"GET"，"OPTIONS"，"HEAD"，"POST"，"PUT"，"PATCH"，"DELETE"。这里调用的是get方法，所以参数为"get"。
 
 - url：必须参数，请求目标的唯一地址。
 
